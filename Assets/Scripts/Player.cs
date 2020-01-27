@@ -86,7 +86,7 @@ public class Player : MonoBehaviour
         if (gameIsPaused == false)
         {
             RB.WakeUp();
-            RB.gravityScale = 3f;
+            RB.gravityScale = 3f;// conflicto con cuerda
 
             Vector2 fixedVelocity = RB.velocity;
             fixedVelocity.x *= 0.75f;
