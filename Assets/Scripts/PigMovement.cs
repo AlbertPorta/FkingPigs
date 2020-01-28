@@ -106,8 +106,9 @@ public class PigMovement : MonoBehaviour
         {
             vidas--;
             movement = false;
+            StopAllCoroutines();
             if (vidas <=0)
-            {
+            {                
                 StartCoroutine(CerdoMuerto());
             }
             else
@@ -144,7 +145,8 @@ public class PigMovement : MonoBehaviour
             rb.AddForce(Vector2.up * salto, ForceMode2D.Impulse);
             animator.SetTrigger("CerdoEnPie");
             yield return new WaitForSeconds(0.15f);
-            rb.MoveRotation(-transform.rotation.z);
+            //rb.MoveRotation(-transform.rotation.z);
+            rb.rotation = -transform.rotation.z;
 
             StartCoroutine(CerdoCamina());
             guardia = true;
@@ -165,21 +167,24 @@ public class PigMovement : MonoBehaviour
         {
             if (player.position.x < gameObject.transform.position.x)
             {
-                rb.MoveRotation(-90);
+                //rb.MoveRotation(-90);
+                rb.rotation = -90;
             }
             else
             {
-                rb.MoveRotation(90);
+                //rb.MoveRotation(90);
+                rb.rotation = 90;
             }
         }
         
     }
     private IEnumerator CerdoMuerto()
     {
-        guardia = false;
-        rb.AddForce(Vector2.up * salto, ForceMode2D.Impulse);
+        guardia = false;        
+        //rb.AddForce(Vector2.up * salto, ForceMode2D.Impulse);
         yield return new WaitForSeconds(0.15f);
-        rb.MoveRotation(-transform.rotation.z);
+        //rb.MoveRotation(-transform.rotation.z);
+        rb.rotation = -transform.rotation.z;
         animator.SetTrigger("CerdoMuerto");
     }
     private void CerdoDestroy()
