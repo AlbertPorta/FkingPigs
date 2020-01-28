@@ -12,10 +12,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject menuPause;
 
-    private void Update()
+    private void Start()
     {
-        
-        
+        DontDestroyOnLoad(this.gameObject);
+
     }
     public void Resume() 
     {

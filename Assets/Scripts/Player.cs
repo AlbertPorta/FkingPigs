@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     public int vidas;
     public int coins;
+    int level;
     public float speed;
     public float maxSpeed;
     public float maxSpeedDown;
@@ -49,9 +50,10 @@ public class Player : MonoBehaviour
         puertaSalida = GameObject.Find("StartDoor");
         transform.position = puertaSalida.transform.position;
         gameManager = FindObjectOfType<GameManager>();
+        level = 1;
 
     }
-
+    
     private void Update()
     {
         gameIsPaused = gameManager.IsPaused();
@@ -414,6 +416,11 @@ public class Player : MonoBehaviour
             PerderVida();
             //Instanciar sangre
 
+        }
+        if (collision.gameObject.CompareTag("ExitDoor"))
+        {
+            level++;
+            gameManager.LoadNextScene();
         }
     }
     private void OnCollisionStay2D(Collision2D collision)

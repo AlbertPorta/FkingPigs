@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CameraSeek : MonoBehaviour
 {
     [SerializeField]
     private Transform player;
     [SerializeField]
-    private Transform exitDoor;
+    private Transform exitDoor;    
     [SerializeField]
     private bool finalMovement;
     public float cameraSpeed;
@@ -29,14 +30,8 @@ public class CameraSeek : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        exitDoor = GameObject.Find("ExitDoor").GetComponent<Transform>(); ;
-
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        startMovement = false;
-        finalMovement = false;
-        startCamara = transform.position;
-        velocity = Vector3.zero;
-        gameManager = FindObjectOfType<GameManager>();
+        DontDestroyOnLoad(this.gameObject);
+        InicializaCamera();
 
     }
 
@@ -111,5 +106,16 @@ public class CameraSeek : MonoBehaviour
     public void CheckPoint()
     {
         StartCoroutine(CheckPointCoroutine());
+    }
+    public void InicializaCamera()
+    {
+        exitDoor = GameObject.Find("ExitDoor").GetComponent<Transform>(); ;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        startMovement = false;
+        finalMovement = false;
+        startCamara = new Vector3(0, 0, -10);
+        transform.position = startCamara;
+        velocity = Vector3.zero;
+        gameManager = FindObjectOfType<GameManager>();
     }
 }

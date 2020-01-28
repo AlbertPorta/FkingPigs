@@ -1,18 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
     UIManager UIManager;
     [SerializeField]
     public bool gameIsPaused;
+    int level;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        UIManager = FindObjectOfType<UIManager>();
+        DontDestroyOnLoad(this.gameObject);        
+        level = 1;
         
     }
 
@@ -46,7 +50,9 @@ public class GameManager : MonoBehaviour
     }
     public void Retry()
     {
-        Time.timeScale = 1;
+        UIManager.Retry();
+        SceneManager.LoadScene(level, LoadSceneMode.Single);
+        gameIsPaused = false;
         //reset level
         //vidas --
     }
@@ -61,7 +67,20 @@ public class GameManager : MonoBehaviour
     {
         return gameIsPaused;
     }
+    public void LoadNextScene()
+    {
+        level++;
+        SceneManager.LoadScene(level, LoadSceneMode.Single);
+        SceneManager.sceneLoaded += InicializaGameManager;
+        
+    }
+    public void InicializaGameManager(Scene scene, LoadSceneMode mode)
+    {
+        UIManager = FindObjectOfType<UIManager>();
+        //Debug.Log("El nivel ha sido cargado");
 
+    }
+    
 
 
 }
