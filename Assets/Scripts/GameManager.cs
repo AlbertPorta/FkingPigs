@@ -9,15 +9,22 @@ public class GameManager : MonoBehaviour
     UIManager UIManager;
     [SerializeField]
     public bool gameIsPaused;
+    [SerializeField]
     int level;
+    public int vidas;
+    public int coins;
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);        
+        DontDestroyOnLoad(this.gameObject);
         level = 1;
-        
+        vidas = 2;
+        coins = 0;
+        UIManager.ActualizarVidasUI(vidas);
+        UIManager.ActualizarCoinsUI(coins);
+        print("Maria");
     }
 
     // Update is called once per frame
@@ -52,8 +59,7 @@ public class GameManager : MonoBehaviour
     {
         UIManager.Retry();
         SceneManager.LoadScene(level, LoadSceneMode.Single);
-        gameIsPaused = false;
-        //reset level
+        gameIsPaused = false;        
         //vidas --
     }
     public void ExitGame()
@@ -70,17 +76,27 @@ public class GameManager : MonoBehaviour
     public void LoadNextScene()
     {
         level++;
+        print("Paco");
         SceneManager.LoadScene(level, LoadSceneMode.Single);
         SceneManager.sceneLoaded += InicializaGameManager;
-        
+
     }
     public void InicializaGameManager(Scene scene, LoadSceneMode mode)
     {
         UIManager = FindObjectOfType<UIManager>();
-        //Debug.Log("El nivel ha sido cargado");
+        Debug.Log("El nivel ha sido cargado");
 
     }
-    
 
+    public void Vidas(int vidas)
+    {
+        this.vidas = vidas;
+        UIManager.ActualizarVidasUI(this.vidas);
+    }
+    public void Coins(int coins)
+    {
+        this.coins = coins;
+        UIManager.ActualizarCoinsUI(this.coins);
+    }
 
 }

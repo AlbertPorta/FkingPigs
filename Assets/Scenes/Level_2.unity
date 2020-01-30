@@ -179,6 +179,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7792442285110437873, guid: 36d6edc8df42a164fbd91733fbf7dab0,
+        type: 3}
+      propertyPath: puertaSalida
+      value: 
+      objectReference: {fileID: 1296356219}
+    - target: {fileID: 7792442285110437873, guid: 36d6edc8df42a164fbd91733fbf7dab0,
+        type: 3}
+      propertyPath: startDoor
+      value: 
+      objectReference: {fileID: 2055516834}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 36d6edc8df42a164fbd91733fbf7dab0, type: 3}
 --- !u!1 &136177926
@@ -1061,6 +1071,85 @@ EdgeCollider2D:
   m_Points:
   - {x: -0.5, y: 0}
   - {x: 0.5, y: 0}
+--- !u!1001 &584709998
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3249420237820606697, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1942400368}
+    - target: {fileID: 3249420237820606697, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: exitDoor
+      value: 
+      objectReference: {fileID: 1296356220}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606702, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_Name
+      value: 'Main Camera '
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 388364bec9b337747be46b51ce5f0321, type: 3}
 --- !u!1 &592138657
 GameObject:
   m_ObjectHideFlags: 0
@@ -20096,6 +20185,18 @@ EdgeCollider2D:
   m_Points:
   - {x: -0.5, y: 0}
   - {x: 0.5, y: 0}
+--- !u!1 &1296356219 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 177900398519798577, guid: 939e5f60c84ef0242af7413f7fc72370,
+    type: 3}
+  m_PrefabInstance: {fileID: 1947392617}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1296356220 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 177900398519798540, guid: 939e5f60c84ef0242af7413f7fc72370,
+    type: 3}
+  m_PrefabInstance: {fileID: 1947392617}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1326680318
 GameObject:
   m_ObjectHideFlags: 0
@@ -28914,6 +29015,12 @@ EdgeCollider2D:
   m_Points:
   - {x: -0.5, y: 0}
   - {x: 0.5, y: 0}
+--- !u!4 &1942400368 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7792442285110437838, guid: 36d6edc8df42a164fbd91733fbf7dab0,
+    type: 3}
+  m_PrefabInstance: {fileID: 54642324}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1947392617
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29119,8 +29226,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartDoor
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 869605700994423865, guid: 84d19676e33ed5543b2117a748118200, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 84d19676e33ed5543b2117a748118200, type: 3}
+--- !u!1 &2055516834 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 869605700994423864, guid: 84d19676e33ed5543b2117a748118200,
+    type: 3}
+  m_PrefabInstance: {fileID: 2055516833}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2087131687
 GameObject:
   m_ObjectHideFlags: 0

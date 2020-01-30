@@ -29,10 +29,8 @@ public class CameraSeek : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-        DontDestroyOnLoad(this.gameObject);
+    {       
         InicializaCamera();
-
     }
 
     // Update is called once per frame
@@ -109,8 +107,6 @@ public class CameraSeek : MonoBehaviour
     }
     public void InicializaCamera()
     {
-        exitDoor = GameObject.Find("ExitDoor").GetComponent<Transform>(); ;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         startMovement = false;
         finalMovement = false;
         startCamara = new Vector3(0, 0, -10);

@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     public int vidas;
-    public int coins;
-    int level;
+    public int coins;   
     public float speed;
     public float maxSpeed;
     public float maxSpeedDown;
@@ -15,7 +14,7 @@ public class Player : MonoBehaviour
     public float disparoUltimo;
     public float tiempoDisparo = 0.3f;
     public GameObject disparoPrefab;
-    public GameObject puertaSalida;
+    public GameObject startDoor;
     Quaternion direccionDisparo;
     Rigidbody2D RB;
     public bool isGrounded;
@@ -25,32 +24,29 @@ public class Player : MonoBehaviour
     float horizontalInput ;
     float verticalInput ;
     SpriteRenderer spriteRenderer;
-    Animator animator;
-    UIManager UIManager;
+    Animator animator;    
     private CameraSeek mainCamera;
     private bool gameIsPaused;
     GameManager gameManager;
 
 
     // Start is called before the first frame update
-    private void Awake()
+    private void Start()
     {
         animator = GetComponent<Animator>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         RB = GetComponent<Rigidbody2D>();
         disparoUltimo = Time.time;
-        maxSpeedDown = -10;
-        vidas = 3;
-        coins = 0;
+        maxSpeedDown = -10;        
         AgarradoCuerda = false;
-        UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        //UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         mainCamera = Camera.main.GetComponent<CameraSeek>();
-        UIManager.ActualizarVidasUI(vidas);
-        UIManager.ActualizarCoinsUI(coins);
-        puertaSalida = GameObject.Find("StartDoor");
-        transform.position = puertaSalida.transform.position;
+        //UIManager.ActualizarVidasUI(vidas);
+        //UIManager.ActualizarCoinsUI(coins);        
+        transform.position = startDoor.transform.position;
         gameManager = FindObjectOfType<GameManager>();
-        level = 1;
+        vidas = gameManager.vidas;
+        coins = gameManager.coins;
 
     }
     
@@ -419,7 +415,6 @@ public class Player : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("ExitDoor"))
         {
-            level++;
             gameManager.LoadNextScene();
         }
     }
@@ -470,32 +465,32 @@ public class Player : MonoBehaviour
         mainCamera.CheckPoint();
         gameObject.SetActive(false);
         stopMove = true;
-        transform.position = puertaSalida.transform.position;
+        transform.position = startDoor.transform.position;
         RB.velocity = Vector2.zero;           
     }
 
     public void CogerMoneda(int valorMoneda)
     {
         coins += valorMoneda;
-        UIManager.ActualizarCoinsUI ( coins );
+        gameManager.Coins(coins);
     }
     private void TirarMoneda()
     {
         coins--;
-        UIManager.ActualizarCoinsUI ( coins );
+        gameManager.Coins(coins);
 
     }
     public void CogerVida()
     {
         vidas++;
-        UIManager.ActualizarVidasUI ( vidas );
+        gameManager.Vidas(vidas);        
         // Sonido Vida
     }
     private void PerderVida()
     {
         
         vidas--;
-        UIManager.ActualizarVidasUI(vidas);
+        gameManager.Vidas(vidas);
         if (vidas <= 0)
         {
             Destroy(this.gameObject);
