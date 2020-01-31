@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         coins = 0;
         UIManager.ActualizarVidasUI(vidas);
         UIManager.ActualizarCoinsUI(coins);
-        print("Maria");
+
     }
 
     // Update is called once per frame

@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public float disparoUltimo;
     public float tiempoDisparo = 0.3f;
     public GameObject disparoPrefab;
+    public GameObject particleBlood;
     public GameObject startDoor;
     Quaternion direccionDisparo;
     Rigidbody2D RB;
@@ -28,6 +29,7 @@ public class Player : MonoBehaviour
     private CameraSeek mainCamera;
     private bool gameIsPaused;
     GameManager gameManager;
+    Vector3 direccionBlood;
 
 
     // Start is called before the first frame update
@@ -403,12 +405,14 @@ public class Player : MonoBehaviour
         {
             if (collision.gameObject.GetComponent<PigMovement>().guardia)
             {
-                PerderVida();
+                direccionBlood = collision.contacts[0].point;
+                PerderVida();               
                 //Instanciar sangre
             }
         }
         if (collision.gameObject.CompareTag("Trampa") || collision.gameObject.CompareTag("Vacio"))
         {
+            direccionBlood = collision.contacts[0].point;
             PerderVida();
             //Instanciar sangre
 
@@ -491,8 +495,11 @@ public class Player : MonoBehaviour
         
         vidas--;
         gameManager.Vidas(vidas);
+        Vector3 relativePos = direccionBlood -transform.position;
+        Instantiate(particleBlood, transform.position, Quaternion.LookRotation (relativePos, Vector3.up));
         if (vidas <= 0)
         {
+            
             Destroy(this.gameObject);
             //corrutina Game Over
         }

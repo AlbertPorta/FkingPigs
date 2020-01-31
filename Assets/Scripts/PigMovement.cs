@@ -204,7 +204,7 @@ public class PigMovement : MonoBehaviour
         }
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direccion, 5f, layerMask);
         Debug.DrawRay(transform.position, Vector2.left, Color.red, 5f);
-        Debug.Log(target);
+
         if (hit.collider != null)
         {
             print("Encontrado un objeto - distancia:" + hit.transform.name);

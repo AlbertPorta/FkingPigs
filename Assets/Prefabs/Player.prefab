@@ -106,7 +106,9 @@ MonoBehaviour:
   tiempoDisparo: 0.25
   disparoPrefab: {fileID: 4783395725365586170, guid: 2d170185aab253a4da1cb5335a400a60,
     type: 3}
-  puertaSalida: {fileID: 0}
+  particleBlood: {fileID: 5069130414910893491, guid: af1b65242d0d4f2469cbaf556e21177c,
+    type: 3}
+  startDoor: {fileID: 0}
   isGrounded: 1
   isHanging: 0
   stopMove: 0
