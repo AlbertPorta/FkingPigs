@@ -23,8 +23,15 @@ public class ParticleCollision : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            Instantiate(splatPrefab, collisionEvents[i].intersection, Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f)), splatHolder);
-            print(collisionEvents[i].intersection);
+            if (collisionEvents[i].intersection.magnitude == 0)
+            {
+                return;
+            }
+            else
+            {
+                Instantiate(splatPrefab, collisionEvents[i].intersection, Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f)), splatHolder);
+                print(collisionEvents[i].intersection);
+            }            
         }
     }
 }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d5751a2c961df945a34295ccf5e576d, type: 3}
-  m_Name: Prefab brush
+  m_Name: Prefab brush Pincho Izq
   m_EditorClassIdentifier: 
   m_Cells:
   - m_Tile: {fileID: 0}
@@ -35,6 +35,6 @@ MonoBehaviour:
   m_Size: {x: 1, y: 1, z: 1}
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Prefabs:
-  - {fileID: 7807816469179171449, guid: 9fccf0bda06cd9f43a8f72708f22676f, type: 3}
+  - {fileID: 6873119357714182765, guid: 4766b9590ed74aa4da8a4ac9ba5a7933, type: 3}
   m_PerlinScale: 0.5
   m_Z: 0

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d5751a2c961df945a34295ccf5e576d, type: 3}
-  m_Name: Prefab brush pie columna
+  m_Name: Prefab brush Hueco 4
   m_EditorClassIdentifier: 
   m_Cells:
   - m_Tile: {fileID: 0}
@@ -35,6 +35,6 @@ MonoBehaviour:
   m_Size: {x: 1, y: 1, z: 1}
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Prefabs:
-  - {fileID: 1645075201234262035, guid: 996926887cddf07448770b2705c1e85e, type: 3}
+  - {fileID: 3473147055171790473, guid: 80c98e0f76ec26f4db58088c7e77021e, type: 3}
   m_PerlinScale: 0.5
   m_Z: 0

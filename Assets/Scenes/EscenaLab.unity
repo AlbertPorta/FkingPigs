@@ -822,8 +822,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1759860268}
+  exitDoor: {fileID: 0}
+  finalMovement: 0
   cameraSpeed: 0.5
+  returnSpeed: 0
   startMovement: 0
+  puntoGuardado: 0
+  startCamara: {x: 0, y: 0, z: 0}
+  startPosition: {x: 0, y: 0, z: 0}
+  startTime: 0
+  duration: 0
+  smoothTime: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d5751a2c961df945a34295ccf5e576d, type: 3}
-  m_Name: Prefab brush pincho suelo
+  m_Name: Prefab brush Hueco 3
   m_EditorClassIdentifier: 
   m_Cells:
   - m_Tile: {fileID: 0}
@@ -35,6 +35,6 @@ MonoBehaviour:
   m_Size: {x: 1, y: 1, z: 1}
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Prefabs:
-  - {fileID: 5191901496327404019, guid: f5a89f1280428e342a1f563fd84fdb76, type: 3}
+  - {fileID: 7556387920150417442, guid: d694ba00ef4a0b445a61e1a775a66f84, type: 3}
   m_PerlinScale: 0.5
   m_Z: 0
