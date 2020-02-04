@@ -189,6 +189,12 @@ PrefabInstance:
       propertyPath: startDoor
       value: 
       objectReference: {fileID: 2055516834}
+    - target: {fileID: 7792442285110437873, guid: 36d6edc8df42a164fbd91733fbf7dab0,
+        type: 3}
+      propertyPath: particleBlood
+      value: 
+      objectReference: {fileID: 5069130414910893491, guid: 9a1afe20fd4302b4a85f5baf38334e77,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 36d6edc8df42a164fbd91733fbf7dab0, type: 3}
 --- !u!1 &136177926
