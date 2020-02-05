@@ -40,6 +40,7 @@ public class Cuerdas : MonoBehaviour
                     climbing = false;
                     playerScript.AgarradoCuerda = false;
                     playerRB.gravityScale = 3;
+                    playerRB.velocity = Vector2.zero;
                     playerRB.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
                 }
 
@@ -53,6 +54,7 @@ public class Cuerdas : MonoBehaviour
                     climbing = false;
                     playerScript.AgarradoCuerda = false;
                     playerRB.gravityScale = 3;
+                    playerRB.velocity = Vector2.zero;
                     playerRB.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
                 }
                 else

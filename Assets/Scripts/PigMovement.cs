@@ -207,7 +207,7 @@ public class PigMovement : MonoBehaviour
 
         if (hit.collider != null)
         {
-            print("Encontrado un objeto - distancia:" + hit.transform.name);
+
             if (hit.transform.tag == "Player")
             {
                 speed = 3;

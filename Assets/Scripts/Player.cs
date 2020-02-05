@@ -68,7 +68,6 @@ public class Player : MonoBehaviour
                 horizontalInput = 0;
                 verticalInput = 0;
             }
-
             Salto();
             Disparo();
             Animations();
@@ -88,7 +87,7 @@ public class Player : MonoBehaviour
             RB.WakeUp();
             if (!AgarradoCuerda)
             {
-                RB.gravityScale = 3f;// conflicto con cuerda
+                RB.gravityScale = 3f;
             }
             
             
@@ -148,18 +147,13 @@ public class Player : MonoBehaviour
                     {
                         animator.SetTrigger("DisparoUp");
                     }
-                    
-
                 }
                 else
                 {
                     animator.SetTrigger("ColgadoPared");
                 }
             }
-            else
-            {
-                animator.SetTrigger("CaidaLenta");
-            }
+            
         }
         else if (isGrounded)
         {
@@ -181,96 +175,118 @@ public class Player : MonoBehaviour
                 {
                     animator.SetTrigger("Idle");
                 }
-
-            }
-            
+                print("quieto");
+            }            
             else if (Input.GetAxisRaw("Horizontal") != 0)
             {
-                if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
+                if (Input.GetKeyDown(KeyCode.X))
                 {
-                    animator.SetTrigger("Disparo");
-                }
-                else if (Input.GetKeyDown(KeyCode.X) && verticalInput < 0)
+                    if (verticalInput == 0)
+                    {
+                        animator.SetTrigger("Disparo");
+                    }
+                }                    
+                else if (Input.GetKey(KeyCode.X))
                 {
-                    animator.SetTrigger("DisparoDown");
-                    Debug.Log("DisparoAbajo");
+                    if (verticalInput < 0)
+                    {
+                        animator.SetTrigger("DisparoDown");
+                        Debug.Log("DisparoAbajo");
+                    }
+                    else if (verticalInput > 0)
+                    {
+                        animator.SetTrigger("DisparoUp");
+                        Debug.Log("DisparoUp");
+                    }                    
                 }
-                else if (Input.GetKeyDown(KeyCode.X) && verticalInput > 0)
-                {
-                    animator.SetTrigger("DisparoUp");
-                    Debug.Log("DisparoUp");
-                }
-                
                 else
                 {
                     animator.SetTrigger("Run");
                 }
-            }
-        }
-        else if (isGrounded == false && isHanging == false)
-        {
-            if (AgarradoCuerda)
-            {
-                if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
-                {
-                    animator.SetTrigger("Disparo");
-                }
-                else if (Input.GetKeyDown(KeyCode.X) && verticalInput < 0)
-                {
-                    animator.SetTrigger("DisparoDown");
-                    Debug.Log("DisparoAbajo");
-                }
-                else if (Input.GetKeyDown(KeyCode.X) && verticalInput > 0)
-                {
-                    animator.SetTrigger("DisparoUp");
-                    Debug.Log("DisparoUp");
-                }
-                else
-                {
-                    animator.SetTrigger("PlayerEscala");
-                }
 
-                    
+
+
+
+                //if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
+                //{
+                //    animator.SetTrigger("Disparo");
+                //}
+                //else if (Input.GetKey(KeyCode.X) && verticalInput < 0)
+                //{
+                //    animator.SetTrigger("DisparoDown");
+                //    Debug.Log("DisparoAbajo");
+                //}
+                //else if (Input.GetKey(KeyCode.X) && verticalInput > 0)
+                //{
+                //    animator.SetTrigger("DisparoUp");
+                //    Debug.Log("DisparoUp");
+                //}                
+                //else
+                //{
+                //    animator.SetTrigger("Run");
+                //}
+            }
+        }        
+        else if (AgarradoCuerda)
+        {
+            if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
+            {
+                    animator.SetTrigger("Disparo");
+            }
+            else if (Input.GetKeyDown(KeyCode.X) && verticalInput < 0)
+            {
+                animator.SetTrigger("DisparoDown");
+                Debug.Log("DisparoAbajo");
+            }
+            else if (Input.GetKeyDown(KeyCode.X) && verticalInput > 0)
+            {
+                animator.SetTrigger("DisparoUp");
+                Debug.Log("DisparoUp");
             }
             else
             {
-                if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
+                animator.SetTrigger("PlayerEscala");
+            }                    
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
+            {
+                animator.SetTrigger("Disparo");
+            }
+            else if (Input.GetKeyDown(KeyCode.X) && verticalInput < 0)
+            {
+                animator.SetTrigger("DisparoDown");
+                Debug.Log("DisparoAbajo");
+            }
+            else if (Input.GetKeyDown(KeyCode.X) && verticalInput > 0)
+            {
+                animator.SetTrigger("DisparoUp");
+                Debug.Log("DisparoUp");
+            }
+            else
+            {
+                if (RB.velocity.y >= 0)
                 {
-                    animator.SetTrigger("Disparo");
-                }
-                else if (Input.GetKeyDown(KeyCode.X) && verticalInput < 0)
-                {
-                    animator.SetTrigger("DisparoDown");
-                    Debug.Log("DisparoAbajo");
-                }
-                else if (Input.GetKeyDown(KeyCode.X) && verticalInput > 0)
-                {
-                    animator.SetTrigger("DisparoUp");
-                    Debug.Log("DisparoUp");
+                    animator.SetTrigger("Salto");
                 }
                 else
                 {
-                    if (RB.velocity.y >= 0)
+                    if (RB.velocity.y < 0f && RB.velocity.y > -10f)
                     {
-                        animator.SetTrigger("Salto");
+                        animator.SetTrigger("CaidaLenta");
                     }
                     else
                     {
-                        if (RB.velocity.y < 0f && RB.velocity.y > -10f)
-                        {
-                            animator.SetTrigger("CaidaLenta");
-                        }
-                        else
-                        {
-                            animator.SetTrigger("CaidaRapida");
-                        }
+                        animator.SetTrigger("CaidaRapida");
                     }
                 }
             }
+        }
             
 
             
-        }
+        
     }
     void Movimiento()
     {
@@ -320,7 +336,6 @@ public class Player : MonoBehaviour
                 isHanging = false;
                 StartCoroutine(StopMoveRoutine());
                 RB.velocity = new Vector2(RB.velocity.x, 0);
-
                 RB.AddForce(new Vector2 (1f, 1f) * fuerzaSalto, ForceMode2D.Impulse);
             }
             else if (Input.GetAxisRaw("Horizontal") > 0)
@@ -441,6 +456,10 @@ public class Player : MonoBehaviour
 
                 isHanging = true;        
             }
+            else
+            {
+                isHanging = false;
+            }
             
         }
     }
@@ -469,6 +488,7 @@ public class Player : MonoBehaviour
         mainCamera.CheckPoint();
         gameObject.SetActive(false);
         stopMove = true;
+        AgarradoCuerda = false;
         transform.position = startDoor.transform.position;
         RB.velocity = Vector2.zero;           
     }
@@ -506,7 +526,6 @@ public class Player : MonoBehaviour
         else
         {
             VolverChecpoint();
-        }
-        
+        }        
     }
 }
