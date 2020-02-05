@@ -26,25 +26,45 @@ public class Cuerdas : MonoBehaviour
     {
         if (collision.gameObject == player)
         {
-            if (Input.GetAxisRaw("Vertical") != 0)
-            {
-                playerRB.velocity = new Vector2(0, Input.GetAxisRaw("Vertical") * climbSpeed);
-                playerRB.gravityScale = 0;
+            if (Input.GetAxisRaw("Vertical") != 0 && !climbing && !Input.GetKey(KeyCode.Z))
+            {               
                 climbing = true;
                 playerScript.AgarradoCuerda = true;
             }
             else if (Input.GetAxisRaw("Vertical") == 0 && climbing)
             {
                 playerRB.velocity = new Vector2(0, 0);
+
+                if (Input.GetKeyDown(KeyCode.Z))
+                {
+                    climbing = false;
+                    playerScript.AgarradoCuerda = false;
+                    playerRB.gravityScale = 3;
+                    playerRB.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
+                }
+
             }
-            if (Input.GetKeyDown(KeyCode.Z))
+            else if (Input.GetAxisRaw("Vertical") != 0 && climbing)
             {
-                climbing = false;
-                playerScript.AgarradoCuerda = false;
-                playerRB.gravityScale = 3;
-                playerRB.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
+
+
+                if (Input.GetKeyDown(KeyCode.Z))
+                {
+                    climbing = false;
+                    playerScript.AgarradoCuerda = false;
+                    playerRB.gravityScale = 3;
+                    playerRB.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
+                }
+                else
+                {
+                    playerRB.velocity = new Vector2(0, Input.GetAxisRaw("Vertical") * climbSpeed);
+                    playerRB.gravityScale = 0;
+                    climbing = true;
+                    playerScript.AgarradoCuerda = true;
+                }
             }
         }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
