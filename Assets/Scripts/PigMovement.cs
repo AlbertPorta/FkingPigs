@@ -128,7 +128,7 @@ public class PigMovement : MonoBehaviour
     private IEnumerator CambioDireccionRoutine () 
     {
         movement = false;
-        yield return new WaitForSeconds(2);        
+        yield return new WaitForSeconds(1.5f);        
         movement = true;
         target = (target == start) ? end : start;
 
@@ -139,13 +139,12 @@ public class PigMovement : MonoBehaviour
         
         if (transform.rotation.eulerAngles.z < -1 || transform.rotation.eulerAngles.z > 1)
         {
-            yield return new WaitForSeconds(2);
+            
             movement = false;
             Debug.Log("cerdo en pie");
             rb.AddForce(Vector2.up * salto, ForceMode2D.Impulse);
             animator.SetTrigger("CerdoEnPie");
-            yield return new WaitForSeconds(0.15f);
-            //rb.MoveRotation(-transform.rotation.z);
+            yield return new WaitForSeconds(0.15f);            
             rb.rotation = -transform.rotation.z;
 
             StartCoroutine(CerdoCamina());
@@ -193,7 +192,7 @@ public class PigMovement : MonoBehaviour
     }
     private void CerdoAlAtaque()
     {
-        int layerMask = 1 << 21;
+        int layerMask = LayerMask.GetMask("Player","Disparo"); ;
         if (transform.position.x > target.x)
         {
             direccion = Vector2.left;
@@ -212,6 +211,13 @@ public class PigMovement : MonoBehaviour
             {
                 speed = 3;
                 animator.speed = 2;
+            }
+            else if (hit.transform.tag == "Disparo")
+            {
+                speed = 3;
+                animator.speed = 2;
+                rb.AddForce(Vector2.up *  salto, ForceMode2D.Impulse);
+                print("SaltoDisparo");
             }
 
         }
