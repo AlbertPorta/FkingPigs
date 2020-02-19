@@ -52694,6 +52694,11 @@ PrefabInstance:
       propertyPath: exitDoor
       value: 
       objectReference: {fileID: 1989336994}
+    - target: {fileID: 3249420237820606697, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -52748,6 +52753,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249420237820606699, guid: 388364bec9b337747be46b51ce5f0321,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3249420237820606702, guid: 388364bec9b337747be46b51ce5f0321,
         type: 3}
@@ -52928,6 +52938,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f5a5fec5303e2144af908670a67a0c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  estadoActual: 0
+  isGuardia: 0
+  isMoviendo: 0
+  salto: 1.75
 --- !u!114 &7277606731139165105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52941,7 +52955,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   default_vida: 5
-  default_velocidad: 3
+  default_velocidad: 3.09
 --- !u!1001 &9145155449755674499
 PrefabInstance:
   m_ObjectHideFlags: 0

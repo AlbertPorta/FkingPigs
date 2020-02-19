@@ -38,7 +38,8 @@ public class PigVida : MonoBehaviour
     public int GetVida()
     {
         return vida;
-    }
+    }    
+
     public float GetVelocidad()
     {
         return velocidad;

@@ -203,6 +203,7 @@ public class PigMovement : MonoBehaviour
         }
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direccion, 5f, layerMask);
         Debug.DrawRay(transform.position, Vector2.left, Color.red, 5f);
+        Debug.DrawRay(transform.position, Vector2.right, Color.red, 5f);
 
         if (hit.collider != null)
         {
