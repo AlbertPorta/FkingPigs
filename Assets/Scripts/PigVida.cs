@@ -5,10 +5,10 @@ using UnityEngine;
 public class PigVida : MonoBehaviour
 {
     int vida;
-    float velocidad;
+    public float velocidad;
 
     [Range(0, 20)] public int default_vida;
-    [Range(0f, 5f)] public float default_velocidad;
+    [Range(0f, 500)] public float default_velocidad;
     // Start is called before the first frame update
 
     void Start()

@@ -40,11 +40,8 @@ public class Player : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         disparoUltimo = Time.time;
         maxSpeedDown = -10;        
-        AgarradoCuerda = false;
-        //UIManager = GameObject.Find("UIManager").GetComponent<UIManager>();
-        mainCamera = Camera.main.GetComponent<CameraSeek>();
-        //UIManager.ActualizarVidasUI(vidas);
-        //UIManager.ActualizarCoinsUI(coins);        
+        AgarradoCuerda = false;        
+        mainCamera = Camera.main.GetComponent<CameraSeek>();        
         transform.position = startDoor.transform.position;
         gameManager = FindObjectOfType<GameManager>();
         vidas = gameManager.vidas;
@@ -393,7 +390,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Pig"))
         {
-            if (collision.gameObject.GetComponent<PigMovement>().guardia)
+            if (collision.gameObject.GetComponent<PigMovimiento>().isGuardia)
             {
                 direccionBlood = collision.contacts[0].point;
                 PerderVida();               

@@ -46314,6 +46314,11 @@ PrefabInstance:
       propertyPath: fuerzaSalto
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 7792442285110437873, guid: 36d6edc8df42a164fbd91733fbf7dab0,
+        type: 3}
+      propertyPath: coins
+      value: 111
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 36d6edc8df42a164fbd91733fbf7dab0, type: 3}
 --- !u!4 &1794149508 stripped
@@ -52697,7 +52702,7 @@ PrefabInstance:
     - target: {fileID: 3249420237820606697, guid: 388364bec9b337747be46b51ce5f0321,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
         type: 3}
@@ -52863,9 +52868,9 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
+  m_UseAutoMass: 1
+  m_Mass: 0.3574555
+  m_LinearDrag: 1
   m_AngularDrag: 0
   m_GravityScale: 3
   m_Material: {fileID: 0}
@@ -52941,7 +52946,7 @@ MonoBehaviour:
   estadoActual: 0
   isGuardia: 0
   isMoviendo: 0
-  salto: 1.75
+  salto: 15
 --- !u!114 &7277606731139165105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52954,8 +52959,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f7b7dc4ebbf0e5409f0786b29909a0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  default_vida: 5
-  default_velocidad: 3.09
+  velocidad: 0
+  default_vida: 0
+  default_velocidad: 0
 --- !u!1001 &9145155449755674499
 PrefabInstance:
   m_ObjectHideFlags: 0
