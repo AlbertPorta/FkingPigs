@@ -172,7 +172,7 @@ public class Player : MonoBehaviour
                 {
                     animator.SetTrigger("Idle");
                 }
-                print("quieto");
+                
             }            
             else /*if (Input.GetAxisRaw("Horizontal") != 0)*/
             {
@@ -390,7 +390,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Pig"))
         {
-            if (collision.gameObject.GetComponent<PigMovimiento>().isGuardia)
+            if (collision.gameObject.GetComponent<PigMovement>().isGuardia)
             {
                 direccionBlood = collision.contacts[0].point;
                 PerderVida();               

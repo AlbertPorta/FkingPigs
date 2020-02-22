@@ -4,242 +4,444 @@ using UnityEngine;
 
 public class PigMovement : MonoBehaviour
 {
-    Rigidbody2D rb;
-    GameObject suelo;
+    // Start is called before the first frame update
+    #region ATRIBUTOS
+    
+    PigVida pigVida;    
     Transform player;
+    GameManager gameManager;    
+    public SpriteRenderer spriteCerdo;  
+    Animator animator;
+    Rigidbody2D rb;
+    RaycastHit2D hit;
+    GameObject suelo;
+
+
+    #region ESTADOSCerdo
+    private enum EstadoEnemigo
+    {
+        Patrulla,
+        Persigue,
+        Dañado,
+        Salta,
+        Cae, 
+        Null
+    }
+
+    [SerializeField]
+    private EstadoEnemigo estadoActual;
+    #endregion
+
+    
+    [SerializeField]
+    float salto;
+    bool gameIsPaused;
+    [SerializeField]
+    public bool isGuardia;
+    [SerializeField]
+    bool isMoviendo;
+    [SerializeField]
+    bool isTocado;
+    [SerializeField]
+    bool isLanding;
+    [SerializeField]
+    bool isPlayerVisto;
+    
     float sueloAncho;
     float centroSuelo;
-    Vector2 start, end, target,direccion;
-    public bool movement, guardia;
-    public float speed;
-    float salto;
-    [SerializeField]
-    int vidas;
+    public Vector2 start, end, target, direccion;
     int randomStart;
-    Animator animator;
-    RaycastHit hit;
-    private bool gameIsPaused;
-    GameManager gameManager;
+    int layerMask;
+    float maxvelocity;
 
 
 
-    void Start()
+    #endregion
+
+    #region METODOS
+
+    #region START
+    private void Start()
     {
-        speed = 0.75f;
-        salto = 6f;
-        rb = gameObject.GetComponent<Rigidbody2D>();
+        pigVida = GetComponent<PigVida>();
         player = GameObject.Find("Player").GetComponent<Transform>();
-        animator = GetComponent<Animator>();
         gameManager = FindObjectOfType<GameManager>();
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteCerdo = GetComponent<SpriteRenderer>();
+        layerMask = LayerMask.GetMask("Player", "Disparo");
+        maxvelocity = 4;
+        estadoActual = EstadoEnemigo.Null;
     }
-   
-    void FixedUpdate()
+    #endregion
+
+    #region UPDATE
+
+    private void Update()
     {
         gameIsPaused = gameManager.IsPaused();
         if (gameIsPaused == false)
         {
             rb.WakeUp();
-            Debug.DrawLine(start, end, Color.blue);
-            if (movement)
+            switch (estadoActual)
             {
-                gameObject.transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.fixedDeltaTime);
-                animator.SetBool("Movement", true);
-                CerdoAlAtaque();
-                if (target == end)
-                {
-                    gameObject.GetComponent<SpriteRenderer>().flipX = true;
-                }
-                else if (target == start)
-                {
-                    gameObject.GetComponent<SpriteRenderer>().flipX = false;
-                }
-                if (transform.position.x == target.x)
-                {
+                case EstadoEnemigo.Patrulla:
+                    PatrullaUpdate();
+                    break;
+                case EstadoEnemigo.Persigue:
+                    PersigueUpdate();
+                    break;
+                case EstadoEnemigo.Dañado:
+                    CerdoDañadoUpdate();
+                    break;
+                case EstadoEnemigo.Cae:
+                    CaeUpdate();
+                    break;
+                case EstadoEnemigo.Salta:
 
-                    StartCoroutine(CambioDireccionRoutine());
-                }
-            }
-            else
-            {
-                animator.SetBool("Movement", false);
+                    break;
             }
         }
         else
         {
             rb.Sleep();
         }
-        
+    }
+    #endregion
+    #region FIXEDUPDATE
 
+    private void FixedUpdate()
+    {
+        if (gameIsPaused == false)
+        {
+            rb.WakeUp();
+            switch (estadoActual)
+            {
+                case EstadoEnemigo.Patrulla:
+                    PatrullaFixedUpdate();
+                    Debug.DrawLine(start, end, Color.blue);
+                    break;
+                case EstadoEnemigo.Persigue:
+                    PersigueFixedUpdate();
+                    break;
+                case EstadoEnemigo.Dañado:
+                    break;
+                case EstadoEnemigo.Cae:
+                    CaeFixedUpdate();
+                    break;
+                case EstadoEnemigo.Salta:
+                    SaltaFixedUpdate();
+                    break;
+            }
+        }
+        else
+        {
+            rb.Sleep();
+        }
+    }
+    #endregion
+    #endregion    
+
+    #region PATRULLA 
+    private void PatrullaUpdate()
+    {
+        isGuardia = true;
+        pigVida.SetVelocidad(1);
+        animator.speed = 1;
+        MirandoTarget();
+
+        if (isMoviendo)
+        {
+            if (transform.position.x == target.x)
+            {
+                animator.SetBool("Movement", false);
+                StartCoroutine(CambioDireccionRoutine());
+            }
+            else
+            {
+                animator.SetBool("Movement", true);
+                transform.position = Vector2.MoveTowards(transform.position, target, pigVida.GetVelocidad() * Time.deltaTime);
+            }
+        }
+
+        if (hit.collider != null)
+        {
+            if (hit.transform.CompareTag("Player"))
+            {
+                estadoActual = EstadoEnemigo.Persigue;
+            }            
+            if (hit.transform.CompareTag("Disparo") && isLanding)
+            {
+                estadoActual = EstadoEnemigo.Salta;
+            }
+           
+        }
+        if (isTocado)
+        {
+            estadoActual = EstadoEnemigo.Dañado;
+        }
+    }    
+    private void PatrullaFixedUpdate()
+    {
+        CerdoVigilaRayCastHit();        
+    }
+    #endregion
+
+    #region PERSIGUE 
+    private void PersigueFixedUpdate()
+    {
+        CerdoVigilaRayCastHit(); 
+        
+        LimitVelocity();  //LIMITA VELOCIDAD A maxvelocity
+        if (transform.position.x > player.position.x + 0.2f || transform.position.x < player.position.x - 0.2f)
+        {
+            rb.AddForce(direccion * pigVida.GetVelocidad() * 120 * Time.fixedDeltaTime, ForceMode2D.Force);
+        }        
+    }    
+    private void PersigueUpdate()
+    {
+        isGuardia = true;
+
+        pigVida.SetVelocidad(3);
+        animator.speed = 2;
+        MirandoTarget(player.position.x);
+
+        if (transform.position.x > player.position.x + 0.2f || transform.position.x < player.position.x - 0.2f)
+        {
+            StopAllCoroutines();
+            animator.SetBool("Movement", true);
+
+        }
+        else
+        {
+            animator.SetBool("Movement", false);
+            StartCoroutine(MisionFallidaCorroutine()); // mas de 4 segundos en idle vuelve a Patrulla
+        }
+
+        if (hit.collider != null)
+        {
+            if (hit.transform.CompareTag("Disparo") && isLanding)
+            {
+                StopAllCoroutines();                
+                estadoActual = EstadoEnemigo.Salta;
+                                
+            }
+        }
+        if (isTocado)
+        {
+            StopAllCoroutines();
+            estadoActual = EstadoEnemigo.Dañado;
+        }
+    }
+    #endregion
+
+    #region SALTA
+    private void SaltaFixedUpdate()
+    {
+        animator.SetBool("Movement", false);
+        animator.SetTrigger("Salta");
+        isGuardia = true;
+        isMoviendo = false;
+        pigVida.SetVelocidad(1);
+        animator.speed = 1;
+        rb.velocity = new Vector2(rb.velocity.x, salto);
         
     }
+        
+    #endregion
+
+    #region DAÑADO
+    private void CerdoDañadoUpdate()
+    {
+        isGuardia = false;
+        isTocado = false;
+        isLanding = false;
+        StopAllCoroutines();
+
+
+
+        if (player != null)
+        {
+            pigVida.SetVida(pigVida.GetVida() - 1);
+
+
+            if (pigVida.GetVida() <= 0)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, salto);
+                animator.SetTrigger("CerdoMuerto");
+            }
+            else
+            {
+                rb.velocity = new Vector2(rb.velocity.x, salto);
+
+                if (player.position.x < gameObject.transform.position.x)
+                {
+                    rb.rotation = -90;
+                }
+                else
+                {
+                    rb.rotation = 90;
+                }
+                if (isLanding)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, salto);
+                    rb.rotation = -transform.rotation.z;
+                    estadoActual = EstadoEnemigo.Persigue;
+                }
+            }
+        }
+        else
+        {
+            isLanding = true;
+            isMoviendo = true;
+            estadoActual = EstadoEnemigo.Patrulla;
+        }
+        
+    }
+    #endregion
+
+    #region CAE
+    private void CaeUpdate()
+    {
+
+    }
+    private void CaeFixedUpdate()
+    {
+
+    }
+    #endregion
+
+    #region OnCollisionEnter
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.tag == "Suelo" && vidas > 0)
+        if (collision.transform.CompareTag("Suelo"))
         {
-            StopAllCoroutines();
-            suelo = collision.gameObject;
-            sueloAncho = suelo.transform.lossyScale.x;
-            centroSuelo = collision.transform.position.x;
-            start = new Vector2(centroSuelo - ((sueloAncho / 2) - 0.4f), transform.position.y);
-            end = new Vector2(centroSuelo + ((sueloAncho / 2) - 0.4f), transform.position.y);
-            randomStart = Random.Range(0, 2);
-            if (randomStart == 0)
+            isLanding = true;            
+            if (collision.gameObject != suelo)
             {
-                target = start;
-            }
-            else
-            {
-                target = end;
-            }
-
-            if (transform.rotation.eulerAngles.z < 0 || transform.rotation.eulerAngles.z > 0)
-            {
-                StartCoroutine(CerdoEnPieRoutine());
-            }
-            else
-            {
-                StartCoroutine(CerdoCamina());
-                guardia = true;
+                print("collisiono y registro suelo");
+                MedirSueloOnCollider(collision);
+                RandomStartEnd();
+                isMoviendo = true;                
+                MirandoTarget();
+                estadoActual = EstadoEnemigo.Patrulla;
             }
         }
-        if (collision.transform.tag == "Disparo")
+
+        if (collision.gameObject.CompareTag("Disparo")  && estadoActual != EstadoEnemigo.Dañado)
         {
-            vidas--;
-            movement = false;
-            StopAllCoroutines();
-            if (vidas <=0)
-            {                
-                StartCoroutine(CerdoMuerto());
-            }
-            else
-            {
-                StartCoroutine(CerdoHerido());
-            }
+            isTocado = true;            
+        }
+        if (collision.transform.CompareTag("Player") && isGuardia)
+        {
+            estadoActual = EstadoEnemigo.Patrulla;
+            print("Jajajajaja");
         }
     }
+    #endregion
+
+    #region OnCollisionExit
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.transform.tag == "Suelo")
         {
-            movement = false;
+            isLanding = false;
         }
-    }
-    
-    private IEnumerator CambioDireccionRoutine () 
-    {
-        movement = false;
-        yield return new WaitForSeconds(1.5f);        
-        movement = true;
-        target = (target == start) ? end : start;
-
 
     }
-    private IEnumerator CerdoEnPieRoutine()
+    #endregion
+    private void MedirSueloOnCollider(Collision2D collision)
     {
-        
-        if (transform.rotation.eulerAngles.z < -1 || transform.rotation.eulerAngles.z > 1)
+        suelo = collision.gameObject;
+        sueloAncho = suelo.transform.lossyScale.x;
+        centroSuelo = collision.transform.position.x;
+        start = new Vector2(centroSuelo - ((sueloAncho / 2) - 0.4f), transform.position.y);
+        end = new Vector2(centroSuelo + ((sueloAncho / 2) - 0.4f), transform.position.y);
+    }
+    private void RandomStartEnd()
+    {
+        randomStart = Random.Range(0, 2);
+        if (randomStart == 0)
         {
-            
-            movement = false;
-            Debug.Log("cerdo en pie");
-            rb.AddForce(Vector2.up * salto, ForceMode2D.Impulse);
-            animator.SetTrigger("CerdoEnPie");
-            yield return new WaitForSeconds(0.15f);            
-            rb.rotation = -transform.rotation.z;
-
-            StartCoroutine(CerdoCamina());
-            guardia = true;
+            target = start;
         }
         else
         {
-            guardia = true;
-            StartCoroutine(CerdoCamina());
+            target = end;
         }
     }
-    private IEnumerator CerdoHerido()
-    {            
-        rb.AddForce(Vector2.up * salto, ForceMode2D.Impulse);
-        guardia = false;
-        yield return new WaitForSeconds(0.15f);
+    IEnumerator CambioDireccionRoutine()
+    {
+        isMoviendo = false;
+        yield return new WaitForSeconds(1.5f);
+        target = (target == start) ? end : start;
+        isMoviendo = true;
+    }
+    IEnumerator MisionFallidaCorroutine()
+    {
+        yield return new WaitForSeconds(4f);
+        estadoActual = EstadoEnemigo.Patrulla;
+    }
 
-        if (player != null)
-        {
-            if (player.position.x < gameObject.transform.position.x)
-            {
-                //rb.MoveRotation(-90);
-                rb.rotation = -90;
-            }
-            else
-            {
-                //rb.MoveRotation(90);
-                rb.rotation = 90;
-            }
-        }
-        
-    }
-    private IEnumerator CerdoMuerto()
+    private void MirandoTarget()
     {
-        guardia = false;        
-        //rb.AddForce(Vector2.up * salto, ForceMode2D.Impulse);
-        yield return new WaitForSeconds(0.15f);
-        //rb.MoveRotation(-transform.rotation.z);
-        rb.rotation = -transform.rotation.z;
-        animator.SetTrigger("CerdoMuerto");
-    }
-    private void CerdoDestroy()
-    {
-        Destroy(this.gameObject);
-    }
-    private void CerdoAlAtaque()
-    {
-        int layerMask = LayerMask.GetMask("Player","Disparo"); ;
-        if (transform.position.x > target.x)
-        {
-            direccion = Vector2.left;
-        }
-        else if (transform.position.x < target.x)
+        if (target.x > transform.position.x + 0.2f)
         {
             direccion = Vector2.right;
+            //spriteCerdo.flipX = true;
         }
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direccion, 5f, layerMask);
+        else if (target.x < transform.position.x - 0.2)
+        {
+            direccion = Vector2.left;
+            //spriteCerdo.flipX = false;
+        }
+        print("estoy mirandotarget");
+    }
+    private void MirandoTarget(float playerX)
+    {
+
+        if (playerX > transform.position.x + 0.2f)
+        {
+            direccion = Vector2.right;
+            spriteCerdo.flipX = true;
+        }
+        else if (playerX < transform.position.x - 0.2)
+        {
+            direccion = Vector2.left;
+            spriteCerdo.flipX = false;
+        }
+
+        print("estoy mirando Player");
+    }
+
+    private void CerdoVigilaRayCastHit()
+    {
+        hit = Physics2D.Raycast(transform.position, direccion, 5f, layerMask);
         Debug.DrawRay(transform.position, Vector2.left, Color.red, 5f);
         Debug.DrawRay(transform.position, Vector2.right, Color.red, 5f);
+    }
 
-        if (hit.collider != null)
+    private void LimitVelocity()
+    {
+        if (rb.velocity.x > maxvelocity)
         {
-
-            if (hit.transform.tag == "Player")
-            {
-                speed = 3;
-                animator.speed = 2;
-            }
-            else if (hit.transform.tag == "Disparo")
-            {
-                speed = 3;
-                animator.speed = 2;
-                rb.AddForce(Vector2.up *  salto, ForceMode2D.Impulse);
-                print("SaltoDisparo");
-            }
-
+            rb.velocity = new Vector2(maxvelocity, rb.velocity.y);
         }
-        else
+        else if (rb.velocity.x < -maxvelocity)
         {
-            speed = 0.75f;
-            animator.speed = 1;
+            rb.velocity = new Vector2(-maxvelocity, rb.velocity.y);
         }
-    }
-    private IEnumerator CerdoCamina()
-    {
-        yield return new WaitForSeconds(0.5f);
 
-        movement = true;
     }
-    public void Pause()
+
+    public void CerdoDestroy()
     {
-        gameIsPaused = true;
+        print("Dile a mama que la quiero");
+        Destroy(this.gameObject);
     }
-    public void Resume()
-    {
-        gameIsPaused = false;
-    }
+
+    
+
 }

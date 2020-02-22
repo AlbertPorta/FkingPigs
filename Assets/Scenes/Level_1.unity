@@ -52893,6 +52893,7 @@ GameObject:
   - component: {fileID: 7277606731139165099}
   - component: {fileID: 7277606731139165105}
   - component: {fileID: 7277606731139165104}
+  - component: {fileID: 7277606731139165106}
   m_Layer: 22
   m_Name: Pig Prototipe
   m_TagString: Pig
@@ -52917,7 +52918,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5625, y: 0.53125}
+    oldSize: {x: 0.5625, y: 0.46875}
     newSize: {x: 0.18, y: 0.17}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -52938,7 +52939,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7277606731139165102}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f5a5fec5303e2144af908670a67a0c9, type: 3}
   m_Name: 
@@ -52962,6 +52963,22 @@ MonoBehaviour:
   velocidad: 0
   default_vida: 0
   default_velocidad: 0
+--- !u!114 &7277606731139165106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277606731139165102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 070f28afe9ecb0a45946edfadb37459f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movement: 0
+  guardia: 0
+  speed: 0
+  vidas: 0
 --- !u!1001 &9145155449755674499
 PrefabInstance:
   m_ObjectHideFlags: 0
