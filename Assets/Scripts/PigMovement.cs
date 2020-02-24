@@ -98,7 +98,7 @@ public class PigMovement : MonoBehaviour
                     CaeUpdate();
                     break;
                 case EstadoEnemigo.Salta:
-
+                    SaltaUpdate();
                     break;
             }
         }
@@ -145,8 +145,9 @@ public class PigMovement : MonoBehaviour
     #region PATRULLA 
     private void PatrullaUpdate()
     {
+
         isGuardia = true;
-        pigVida.SetVelocidad(1);
+        pigVida.SetVelocidad(1f);
         animator.speed = 1;
         MirandoTarget();
 
@@ -168,16 +169,19 @@ public class PigMovement : MonoBehaviour
         {
             if (hit.transform.CompareTag("Player"))
             {
+                isMoviendo = true;
                 estadoActual = EstadoEnemigo.Persigue;
             }            
             if (hit.transform.CompareTag("Disparo") && isLanding)
             {
+                isMoviendo = true;
                 estadoActual = EstadoEnemigo.Salta;
             }
            
         }
         if (isTocado)
         {
+            StopAllCoroutines();
             estadoActual = EstadoEnemigo.Dañado;
         }
     }    
@@ -223,8 +227,7 @@ public class PigMovement : MonoBehaviour
             if (hit.transform.CompareTag("Disparo") && isLanding)
             {
                 StopAllCoroutines();                
-                estadoActual = EstadoEnemigo.Salta;
-                                
+                estadoActual = EstadoEnemigo.Salta;                                
             }
         }
         if (isTocado)
@@ -232,20 +235,39 @@ public class PigMovement : MonoBehaviour
             StopAllCoroutines();
             estadoActual = EstadoEnemigo.Dañado;
         }
+        if (rb.velocity.y < 0)
+        {
+            StopAllCoroutines();
+            estadoActual = EstadoEnemigo.Cae;
+        }
     }
     #endregion
 
     #region SALTA
-    private void SaltaFixedUpdate()
-    {
-        animator.SetBool("Movement", false);
+    private void SaltaUpdate()
+    {        
         animator.SetTrigger("Salta");
         isGuardia = true;
-        isMoviendo = false;
         pigVida.SetVelocidad(1);
         animator.speed = 1;
-        rb.velocity = new Vector2(rb.velocity.x, salto);
+        if (isTocado)
+        {
+            estadoActual = EstadoEnemigo.Dañado;
+        }
+    }
+    private void SaltaFixedUpdate()
+    {
         
+        if (isLanding)
+        {
+            rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);            
+        }
+        if (rb.velocity.y < 0)
+        {
+            estadoActual = EstadoEnemigo.Cae;
+        }
+
+
     }
         
     #endregion
@@ -256,7 +278,7 @@ public class PigMovement : MonoBehaviour
         isGuardia = false;
         isTocado = false;
         isLanding = false;
-        StopAllCoroutines();
+        
 
 
 
@@ -267,12 +289,12 @@ public class PigMovement : MonoBehaviour
 
             if (pigVida.GetVida() <= 0)
             {
-                rb.velocity = new Vector2(rb.velocity.x, salto);
+                rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
                 animator.SetTrigger("CerdoMuerto");
             }
             else
             {
-                rb.velocity = new Vector2(rb.velocity.x, salto);
+                rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
 
                 if (player.position.x < gameObject.transform.position.x)
                 {
@@ -284,7 +306,7 @@ public class PigMovement : MonoBehaviour
                 }
                 if (isLanding)
                 {
-                    rb.velocity = new Vector2(rb.velocity.x, salto);
+                    rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
                     rb.rotation = -transform.rotation.z;
                     estadoActual = EstadoEnemigo.Persigue;
                 }
@@ -292,8 +314,7 @@ public class PigMovement : MonoBehaviour
         }
         else
         {
-            isLanding = true;
-            isMoviendo = true;
+            isLanding = true;            
             estadoActual = EstadoEnemigo.Patrulla;
         }
         
@@ -302,8 +323,20 @@ public class PigMovement : MonoBehaviour
 
     #region CAE
     private void CaeUpdate()
-    {
-
+    {        
+        animator.SetTrigger("Cae");
+        isGuardia = true;
+        pigVida.SetVelocidad(1);
+        animator.speed = 1;
+        if (isLanding)
+        {
+            estadoActual = EstadoEnemigo.Patrulla;
+        }
+        if (isTocado)
+        {
+            StopAllCoroutines();
+            estadoActual = EstadoEnemigo.Dañado;
+        }
     }
     private void CaeFixedUpdate()
     {
@@ -317,13 +350,13 @@ public class PigMovement : MonoBehaviour
     {
         if (collision.transform.CompareTag("Suelo"))
         {
-            isLanding = true;            
+            isLanding = true;
+            isMoviendo = true;
             if (collision.gameObject != suelo)
             {
                 print("collisiono y registro suelo");
                 MedirSueloOnCollider(collision);
-                RandomStartEnd();
-                isMoviendo = true;                
+                RandomStartEnd();                               
                 MirandoTarget();
                 estadoActual = EstadoEnemigo.Patrulla;
             }
@@ -345,7 +378,7 @@ public class PigMovement : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.transform.tag == "Suelo")
+        if (collision.transform.CompareTag("Suelo"))
         {
             isLanding = false;
         }
@@ -382,6 +415,7 @@ public class PigMovement : MonoBehaviour
     IEnumerator MisionFallidaCorroutine()
     {
         yield return new WaitForSeconds(4f);
+        animator.SetBool("Movement",true);
         estadoActual = EstadoEnemigo.Patrulla;
     }
 
@@ -390,12 +424,12 @@ public class PigMovement : MonoBehaviour
         if (target.x > transform.position.x + 0.2f)
         {
             direccion = Vector2.right;
-            //spriteCerdo.flipX = true;
+            spriteCerdo.flipX = true;
         }
         else if (target.x < transform.position.x - 0.2)
         {
             direccion = Vector2.left;
-            //spriteCerdo.flipX = false;
+            spriteCerdo.flipX = false;
         }
         print("estoy mirandotarget");
     }
@@ -421,6 +455,7 @@ public class PigMovement : MonoBehaviour
         hit = Physics2D.Raycast(transform.position, direccion, 5f, layerMask);
         Debug.DrawRay(transform.position, Vector2.left, Color.red, 5f);
         Debug.DrawRay(transform.position, Vector2.right, Color.red, 5f);
+        
     }
 
     private void LimitVelocity()

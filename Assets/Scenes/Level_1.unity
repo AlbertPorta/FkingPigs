@@ -17787,7 +17787,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7277606730370444402, guid: 34474eab1ad60c747ab9615e2ef29d5a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 34474eab1ad60c747ab9615e2ef29d5a, type: 3}
 --- !u!4 &836642686 stripped
 Transform:
@@ -19060,7 +19061,8 @@ PrefabInstance:
       propertyPath: m_FlipX
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7277606730370444402, guid: 34474eab1ad60c747ab9615e2ef29d5a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 34474eab1ad60c747ab9615e2ef29d5a, type: 3}
 --- !u!1001 &898766725
 PrefabInstance:
@@ -52702,7 +52704,7 @@ PrefabInstance:
     - target: {fileID: 3249420237820606697, guid: 388364bec9b337747be46b51ce5f0321,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3249420237820606698, guid: 388364bec9b337747be46b51ce5f0321,
         type: 3}
@@ -52892,7 +52894,6 @@ GameObject:
   - component: {fileID: 7277606731139165103}
   - component: {fileID: 7277606731139165099}
   - component: {fileID: 7277606731139165105}
-  - component: {fileID: 7277606731139165104}
   - component: {fileID: 7277606731139165106}
   m_Layer: 22
   m_Name: Pig Prototipe
@@ -52918,7 +52919,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5625, y: 0.46875}
+    oldSize: {x: 0.5625, y: 0.53125}
     newSize: {x: 0.18, y: 0.17}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -52932,22 +52933,6 @@ PolygonCollider2D:
       - {x: 0.22356415, y: -0.21567039}
       - {x: 0.25546724, y: -0.15386085}
       - {x: 0.25254366, y: 0.24470177}
---- !u!114 &7277606731139165104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7277606731139165102}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f5a5fec5303e2144af908670a67a0c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  estadoActual: 0
-  isGuardia: 0
-  isMoviendo: 0
-  salto: 15
 --- !u!114 &7277606731139165105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52960,6 +52945,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f7b7dc4ebbf0e5409f0786b29909a0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vida: 291
   velocidad: 0
   default_vida: 0
   default_velocidad: 0
@@ -52975,10 +52961,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 070f28afe9ecb0a45946edfadb37459f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movement: 0
-  guardia: 0
-  speed: 0
-  vidas: 0
+  spriteCerdo: {fileID: 0}
+  estadoActual: 0
+  salto: 0
+  isGuardia: 0
+  isMoviendo: 0
+  isTocado: 0
+  isLanding: 0
+  isPlayerVisto: 0
+  start: {x: 0, y: 0}
+  end: {x: 0, y: 0}
+  target: {x: 0, y: 0}
+  direccion: {x: 0, y: 0}
 --- !u!1001 &9145155449755674499
 PrefabInstance:
   m_ObjectHideFlags: 0
