@@ -72,6 +72,7 @@ public class PigMovement : MonoBehaviour
         layerMask = LayerMask.GetMask("Player", "Disparo");
         maxvelocity = 4;
         estadoActual = EstadoEnemigo.Null;
+        salto = 75f;
     }
     #endregion
 
@@ -275,42 +276,41 @@ public class PigMovement : MonoBehaviour
     #region DAÑADO
     private void CerdoDañadoUpdate()
     {
-        isGuardia = false;
-        isTocado = false;
-        isLanding = false;
+        isGuardia = false;        
         
-
-
-
         if (player != null)
         {
-            pigVida.SetVida(pigVida.GetVida() - 1);
-
-
-            if (pigVida.GetVida() <= 0)
+            if (isTocado)
             {
-                rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
-                animator.SetTrigger("CerdoMuerto");
-            }
-            else
-            {
-                rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
-
-                if (player.position.x < gameObject.transform.position.x)
+                pigVida.SetVida(pigVida.GetVida() - 1);
+                if (pigVida.GetVida() <= 0)
                 {
-                    rb.rotation = -90;
+                    rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                    animator.SetTrigger("CerdoMuerto");
+                    isTocado = false;
+                    isLanding = false;
                 }
                 else
                 {
-                    rb.rotation = 90;
-                }
-                if (isLanding)
-                {
                     rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
-                    rb.rotation = -transform.rotation.z;
-                    estadoActual = EstadoEnemigo.Persigue;
+
+                    if (player.position.x < gameObject.transform.position.x)
+                    {
+                        rb.rotation = -90;
+                    }
+                    else
+                    {
+                        rb.rotation = 90;
+                    }
+                    isTocado = false;
+                    isLanding = false;
                 }
+            }            
+            else if (isLanding)
+            {
+                StartCoroutine(CerdoSeIncorporaCorroutine());
             }
+            
         }
         else
         {
@@ -417,6 +417,13 @@ public class PigMovement : MonoBehaviour
         yield return new WaitForSeconds(4f);
         animator.SetBool("Movement",true);
         estadoActual = EstadoEnemigo.Patrulla;
+    }
+    IEnumerator CerdoSeIncorporaCorroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        rb.rotation = -transform.rotation.z;
+        estadoActual = EstadoEnemigo.Persigue;
     }
 
     private void MirandoTarget()

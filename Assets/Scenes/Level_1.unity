@@ -52947,7 +52947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vida: 291
   velocidad: 0
-  default_vida: 0
+  default_vida: 3
   default_velocidad: 0
 --- !u!114 &7277606731139165106
 MonoBehaviour:
