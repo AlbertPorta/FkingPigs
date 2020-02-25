@@ -307,7 +307,7 @@ public class PigMovement : MonoBehaviour
                 }
             }            
             else if (isLanding)
-            {
+            {                
                 StartCoroutine(CerdoSeIncorporaCorroutine());
             }
             
@@ -323,15 +323,18 @@ public class PigMovement : MonoBehaviour
 
     #region CAE
     private void CaeUpdate()
-    {        
-        animator.SetTrigger("Cae");
+    {
         isGuardia = true;
         pigVida.SetVelocidad(1);
         animator.speed = 1;
         if (isLanding)
         {
-            estadoActual = EstadoEnemigo.Patrulla;
+            print("Ostia Pedrín");
+            animator.SetTrigger("Cae");
+            estadoActual = EstadoEnemigo.Persigue;
         }
+        
+
         if (isTocado)
         {
             StopAllCoroutines();
@@ -340,7 +343,7 @@ public class PigMovement : MonoBehaviour
     }
     private void CaeFixedUpdate()
     {
-
+        rb.rotation = 0;
     }
     #endregion
 
@@ -350,6 +353,8 @@ public class PigMovement : MonoBehaviour
     {
         if (collision.transform.CompareTag("Suelo"))
         {
+            
+            print("Ostia Pedrín Collision");
             isLanding = true;
             isMoviendo = true;
             if (collision.gameObject != suelo)
@@ -408,7 +413,7 @@ public class PigMovement : MonoBehaviour
     IEnumerator CambioDireccionRoutine()
     {
         isMoviendo = false;
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
         target = (target == start) ? end : start;
         isMoviendo = true;
     }
@@ -417,13 +422,17 @@ public class PigMovement : MonoBehaviour
         yield return new WaitForSeconds(4f);
         animator.SetBool("Movement",true);
         estadoActual = EstadoEnemigo.Patrulla;
+        print("Buscare en otro lado");
     }
     IEnumerator CerdoSeIncorporaCorroutine()
     {
+        isLanding = false;
         yield return new WaitForSeconds(2f);
         rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
-        rb.rotation = -transform.rotation.z;
-        estadoActual = EstadoEnemigo.Persigue;
+        rb.rotation = 0;
+        estadoActual = EstadoEnemigo.Cae;
+        isLanding = true;
+        print("No podras conmigo");
     }
 
     private void MirandoTarget()
@@ -454,7 +463,7 @@ public class PigMovement : MonoBehaviour
             spriteCerdo.flipX = false;
         }
 
-        print("estoy mirando Player");
+        //print("estoy mirando Player");
     }
 
     private void CerdoVigilaRayCastHit()
