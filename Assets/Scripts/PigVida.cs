@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PigVida : MonoBehaviour
 {
-    int vida;
+    public int vida;
     public float velocidad;
 
     [Range(0, 20)] public int default_vida;

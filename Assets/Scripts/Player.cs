@@ -123,6 +123,7 @@ public class Player : MonoBehaviour
 
         if (isHanging)
         {
+            animator.enabled = true;
             if (Input.GetAxisRaw("Horizontal") != 0)
             {
                 if (Input.GetKeyDown(KeyCode.X))
@@ -154,6 +155,7 @@ public class Player : MonoBehaviour
         }
         else if (isGrounded)
         {
+            animator.enabled = true;
             if (Input.GetAxisRaw("Horizontal") == 0)
             {
                 if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
@@ -172,7 +174,7 @@ public class Player : MonoBehaviour
                 {
                     animator.SetTrigger("Idle");
                 }
-                print("quieto");
+                
             }            
             else /*if (Input.GetAxisRaw("Horizontal") != 0)*/
             {
@@ -201,27 +203,42 @@ public class Player : MonoBehaviour
         }        
         else if (AgarradoCuerda)
         {
+            animator.SetTrigger("PlayerEscala");
             if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
             {
-                    animator.SetTrigger("Disparo");
+                animator.enabled = true;
+                animator.SetTrigger("Disparo");
             }
             else if (Input.GetKeyDown(KeyCode.X) && verticalInput < 0)
             {
+                animator.enabled = true;
                 animator.SetTrigger("DisparoDown");
                 Debug.Log("DisparoAbajo");
             }
             else if (Input.GetKeyDown(KeyCode.X) && verticalInput > 0)
             {
+                animator.enabled = true;
                 animator.SetTrigger("DisparoUp");
                 Debug.Log("DisparoUp");
+            }                 
+            else if (horizontalInput != 0 || verticalInput != 0)
+            {
+                animator.enabled = true;                   
             }
             else
             {
-                animator.SetTrigger("PlayerEscala");
-            }                    
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("PlayerEscala"))
+                {
+                    animator.enabled = false;
+                }                               
+                
+            }
+                
+                               
         }
         else
         {
+            animator.enabled = true;
             if (Input.GetKeyDown(KeyCode.X) && verticalInput == 0)
             {
                 animator.SetTrigger("Disparo");
@@ -390,7 +407,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Pig"))
         {
-            if (collision.gameObject.GetComponent<PigMovimiento>().isGuardia)
+            if (collision.gameObject.GetComponent<PigMovement>().isGuardia)
             {
                 direccionBlood = collision.contacts[0].point;
                 PerderVida();               
@@ -411,13 +428,13 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if ( collision.transform.tag == "Suelo" )
+        if ( collision.transform.CompareTag("Suelo"))
         {
             isGrounded = true;
             isHanging = false;
             
         }
-        else if ( collision.transform.tag == "Pared" && isGrounded == false)
+        else if ( collision.transform.CompareTag("Pared") && isGrounded == false)
         {
             if (horizontalInput != 0)
             {
@@ -438,11 +455,11 @@ public class Player : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.transform.tag == "Suelo")
+        if (collision.transform.CompareTag("Suelo"))
         {
             isGrounded = false;
         }
-        else if (collision.transform.tag == "Pared")
+        else if (collision.transform.CompareTag("Pared"))
         {           
                 isHanging = false;
         }           

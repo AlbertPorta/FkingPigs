@@ -20,8 +20,8 @@ public class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
         level = 1;
-        vidas = 2;
-        coins = 0;
+        vidas = 4;
+        coins = 100;
         UIManager.ActualizarVidasUI(vidas);
         UIManager.ActualizarCoinsUI(coins);
 
