@@ -45,7 +45,7 @@ public class PigMovement : MonoBehaviour
     [SerializeField]
     bool isLanding;
     [SerializeField]
-    bool isPlayerVisto;
+    bool isPlayerTocado;
     
     float sueloAncho;
     float centroSuelo;
@@ -72,7 +72,7 @@ public class PigMovement : MonoBehaviour
         layerMask = LayerMask.GetMask("Player", "Disparo");
         maxvelocity = 4;
         estadoActual = EstadoEnemigo.Null;
-        salto = 75f;
+        salto = 150f;
     }
     #endregion
 
@@ -148,6 +148,7 @@ public class PigMovement : MonoBehaviour
     {
 
         isGuardia = true;
+        isPlayerTocado = false;
         pigVida.SetVelocidad(1f);
         animator.speed = 1;
         MirandoTarget();
@@ -195,8 +196,7 @@ public class PigMovement : MonoBehaviour
     #region PERSIGUE 
     private void PersigueFixedUpdate()
     {
-        CerdoVigilaRayCastHit(); 
-        
+        CerdoVigilaRayCastHit();         
         LimitVelocity();  //LIMITA VELOCIDAD A maxvelocity
         if (transform.position.x > player.position.x + 0.2f || transform.position.x < player.position.x - 0.2f)
         {
@@ -236,21 +236,31 @@ public class PigMovement : MonoBehaviour
             StopAllCoroutines();
             estadoActual = EstadoEnemigo.Dañado;
         }
-        if (rb.velocity.y < 0)
+        if (!isLanding)
         {
             StopAllCoroutines();
             estadoActual = EstadoEnemigo.Cae;
+        }
+        if (isPlayerTocado)
+        {
+            MisionCumplida();
         }
     }
     #endregion
 
     #region SALTA
     private void SaltaUpdate()
-    {        
-        animator.SetTrigger("Salta");
-        isGuardia = true;
-        pigVida.SetVelocidad(1);
-        animator.speed = 1;
+    {
+        if (isLanding)
+        {
+            print("animator Salta");
+            animator.SetTrigger("Salta");
+            isGuardia = true;
+            pigVida.SetVelocidad(1);
+            animator.speed = 1;
+            isLanding = false;
+        }
+        
         if (isTocado)
         {
             estadoActual = EstadoEnemigo.Dañado;
@@ -276,24 +286,28 @@ public class PigMovement : MonoBehaviour
     #region DAÑADO
     private void CerdoDañadoUpdate()
     {
-        isGuardia = false;        
+                
         
         if (player != null)
         {
+            isGuardia = false;
             if (isTocado)
             {
                 pigVida.SetVida(pigVida.GetVida() - 1);
                 if (pigVida.GetVida() <= 0)
                 {
-                    rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                    if (isLanding)
+                    {
+                        rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                    }                   
                     animator.SetTrigger("CerdoMuerto");
                     isTocado = false;
                     isLanding = false;
+                   
                 }
                 else
                 {
-                    rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
-
+                    rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);                     
                     if (player.position.x < gameObject.transform.position.x)
                     {
                         rb.rotation = -90;
@@ -303,18 +317,18 @@ public class PigMovement : MonoBehaviour
                         rb.rotation = 90;
                     }
                     isTocado = false;
-                    isLanding = false;
+                    
                 }
             }            
             else if (isLanding)
-            {                
+            {             
                 StartCoroutine(CerdoSeIncorporaCorroutine());
+                isLanding = false;                
             }
             
         }
         else
-        {
-            isLanding = true;            
+        {                       
             estadoActual = EstadoEnemigo.Patrulla;
         }
         
@@ -369,12 +383,14 @@ public class PigMovement : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Disparo")  && estadoActual != EstadoEnemigo.Dañado)
         {
-            isTocado = true;            
+            isTocado = true;
+            rb.velocity = Vector2.zero; ;
         }
         if (collision.transform.CompareTag("Player") && isGuardia)
-        {
-            estadoActual = EstadoEnemigo.Patrulla;
+        {            
+            animator.SetTrigger("Cae");
             print("Jajajajaja");
+            isPlayerTocado = true;
         }
     }
     #endregion
@@ -424,14 +440,19 @@ public class PigMovement : MonoBehaviour
         estadoActual = EstadoEnemigo.Patrulla;
         print("Buscare en otro lado");
     }
+    private void MisionCumplida()
+    {        
+        animator.SetBool("Movement", true);
+        estadoActual = EstadoEnemigo.Patrulla;
+        print("Buscando objetivo");
+    }
     IEnumerator CerdoSeIncorporaCorroutine()
     {
-        isLanding = false;
+        
         yield return new WaitForSeconds(2f);
         rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
         rb.rotation = 0;
-        estadoActual = EstadoEnemigo.Cae;
-        isLanding = true;
+        estadoActual = EstadoEnemigo.Cae;        
         print("No podras conmigo");
     }
 
