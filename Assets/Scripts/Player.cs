@@ -306,19 +306,18 @@ public class Player : MonoBehaviour
     }
     void Salto()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
-        {
-            isGrounded = false;
-            RB.velocity = new Vector2(RB.velocity.x, 0);
-            RB.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
-          
-        }
         if (Input.GetKeyUp(KeyCode.Z) && RB.velocity.y > 0)
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y * 0.70f);
         }
 
-        if (Input.GetKeyDown(KeyCode.Z) && isHanging)
+        if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
+        {
+            isGrounded = false;
+            RB.velocity = new Vector2(RB.velocity.x, 0);
+            RB.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);          
+        }
+        else if (Input.GetKeyDown(KeyCode.Z) && isHanging)
         {
             if (Input.GetAxisRaw("Horizontal") < 0)
             {
@@ -326,6 +325,7 @@ public class Player : MonoBehaviour
                 StartCoroutine(StopMoveRoutine());
                 RB.velocity = new Vector2(RB.velocity.x, 0);
                 RB.AddForce(new Vector2 (1f, 1f) * fuerzaSalto, ForceMode2D.Impulse);
+                return;
             }
             else if (Input.GetAxisRaw("Horizontal") > 0)
             {
@@ -333,7 +333,9 @@ public class Player : MonoBehaviour
                 StartCoroutine(StopMoveRoutine());
                 RB.velocity = new Vector2(RB.velocity.x, 0);
                 RB.AddForce(new Vector2(-1f, 1f) * fuerzaSalto, ForceMode2D.Impulse);
-            }            
+                return;
+            }
+            
         }
     }
     private void Disparo()
@@ -460,10 +462,10 @@ public class Player : MonoBehaviour
             isGrounded = false;
         }
         else if (collision.transform.CompareTag("Pared"))
-        {           
-                isHanging = false;
-        }           
-        
+        {
+            StartCoroutine(VoyACaerRoutine());
+        }
+
     }
     private IEnumerator StopMoveRoutine()
     {
@@ -472,6 +474,14 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds (0.075f);
         stopMove = false;
     }
+    private IEnumerator VoyACaerRoutine()
+    {        
+        isGrounded = true;
+        isHanging = false;
+        yield return new WaitForSeconds(0.2f);
+        isGrounded = false;
+    }
+
     private void VolverChecpoint()
     {
         mainCamera.CheckPoint();
