@@ -30,9 +30,10 @@ public class PigMovement : MonoBehaviour
 
     [SerializeField]
     private EstadoEnemigo estadoActual;
+    private EstadoEnemigo estadoUltimo;
     #endregion
 
-    
+
     [SerializeField]
     float salto;
     bool gameIsPaused;
@@ -151,7 +152,7 @@ public class PigMovement : MonoBehaviour
         isPlayerTocado = false;
         pigVida.SetVelocidad(1f);
         animator.speed = 1;
-        MirandoTarget();
+        
 
         if (isMoviendo)
         {
@@ -159,11 +160,13 @@ public class PigMovement : MonoBehaviour
             {
                 animator.SetBool("Movement", false);
                 StartCoroutine(CambioDireccionRoutine());
+                
             }
             else
             {
                 animator.SetBool("Movement", true);
-                transform.position = Vector2.MoveTowards(transform.position, target, pigVida.GetVelocidad() * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position,new Vector2( target.x, transform.position.y), pigVida.GetVelocidad() * Time.deltaTime);
+                MirandoTarget();
             }
         }
 
@@ -196,12 +199,20 @@ public class PigMovement : MonoBehaviour
     #region PERSIGUE 
     private void PersigueFixedUpdate()
     {
-        CerdoVigilaRayCastHit();         
-        LimitVelocity();  //LIMITA VELOCIDAD A maxvelocity
-        if (transform.position.x > player.position.x + 0.2f || transform.position.x < player.position.x - 0.2f)
+        if(player != null)
         {
-            rb.AddForce(direccion * pigVida.GetVelocidad() * 120 * Time.fixedDeltaTime, ForceMode2D.Force);
-        }        
+            CerdoVigilaRayCastHit();
+            LimitVelocity();  //LIMITA VELOCIDAD A maxvelocity
+            if (transform.position.x > player.position.x + 0.2f || transform.position.x < player.position.x - 0.2f)
+            {
+                rb.AddForce(direccion * pigVida.GetVelocidad() * 120 * Time.fixedDeltaTime, ForceMode2D.Force);
+            }
+        }
+        else
+        {
+            estadoActual = EstadoEnemigo.Patrulla;
+        }
+        
     }    
     private void PersigueUpdate()
     {
@@ -251,8 +262,9 @@ public class PigMovement : MonoBehaviour
     #region SALTA
     private void SaltaUpdate()
     {
+        StopAllCoroutines();
         if (isLanding)
-        {
+        {           
             print("animator Salta");
             animator.SetTrigger("Salta");
             isGuardia = true;
@@ -298,40 +310,74 @@ public class PigMovement : MonoBehaviour
                 {
                     if (isLanding)
                     {
-                        rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
-                    }                   
-                    animator.SetTrigger("CerdoMuerto");
-                    isTocado = false;
-                    isLanding = false;
-                   
-                }
-                else
-                {
-                    rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);                     
-                    if (player.position.x < gameObject.transform.position.x)
-                    {
-                        rb.rotation = -90;
+                        if (player.position.x < gameObject.transform.position.x)
+                        {
+                            rb.AddForce(new Vector2(1 , 0.4f)* salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                        }
+                        else
+                        {
+                            rb.AddForce(new Vector2(-1f , 0.4f)* salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                        }
+                        animator.SetTrigger("CerdoMuerto");
+                        isTocado = false;
                     }
                     else
                     {
-                        rb.rotation = 90;
+                        if (player.position.x < gameObject.transform.position.x)
+                        {
+                            rb.AddForce(Vector2.right * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                        }
+                        else
+                        {
+                            rb.AddForce(Vector2.left * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                        }
+                        animator.SetTrigger("CerdoMuerto");                        
+                        isTocado = false;
+                    }                             
+                }
+                else
+                {
+                    if (isLanding)
+                    {
+
+                        if (player.position.x < gameObject.transform.position.x)
+                        {
+                            rb.AddForce(new Vector2(1f, 0.4f) * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                            rb.rotation = -90;
+                        }
+                        else
+                        {
+                            rb.AddForce(new Vector2(-1f, 0.4f) * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                            rb.rotation = 90;
+                        }                        
+                        isTocado = false;
                     }
-                    isTocado = false;
-                    
+                    else
+                    {
+                        if (player.position.x < gameObject.transform.position.x)
+                        {
+                            rb.AddForce(Vector2.right * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                            rb.rotation = -90;
+                        }
+                        else
+                        {
+                            rb.AddForce(Vector2.left * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                            rb.rotation = 90;
+                        }
+                        isLanding = true;
+                        isTocado = false;
+                    }
                 }
             }            
             else if (isLanding)
             {             
-                StartCoroutine(CerdoSeIncorporaCorroutine());
-                isLanding = false;                
-            }
-            
+                StartCoroutine(CerdoSeIncorporaCorroutine());                                
+            }            
         }
         else
         {                       
             estadoActual = EstadoEnemigo.Patrulla;
-        }
-        
+        }        
     }
     #endregion
 
@@ -365,7 +411,7 @@ public class PigMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.CompareTag("Suelo"))
+        if (collision.transform.CompareTag("Suelo") && estadoActual != EstadoEnemigo.Dañado)
         {
             
             print("Ostia Pedrín Collision");
@@ -391,6 +437,28 @@ public class PigMovement : MonoBehaviour
             animator.SetTrigger("Cae");
             print("Jajajajaja");
             isPlayerTocado = true;
+        }
+        if (collision.transform.CompareTag("Pig"))
+        {
+            if (collision.gameObject.GetComponent<PigMovement>().estadoActual == EstadoEnemigo.Patrulla && estadoActual == EstadoEnemigo.Patrulla)
+            {
+                animator.SetBool("Movement", false);
+                StartCoroutine(CambioDireccionRoutine());
+            }
+            else
+            {
+                estadoUltimo = estadoActual;
+                estadoActual = EstadoEnemigo.Null;
+                if (collision.transform.position.x < gameObject.transform.position.x)
+                {
+                    rb.AddForce(Vector2.right * salto *1.5f* Time.fixedDeltaTime, ForceMode2D.Impulse);                    
+                }
+                else
+                {
+                    rb.AddForce(Vector2.left * salto *1.5f* Time.fixedDeltaTime, ForceMode2D.Impulse);
+                }
+                StartCoroutine(CerdoRebotaRoutine());
+            }
         }
     }
     #endregion
@@ -431,6 +499,7 @@ public class PigMovement : MonoBehaviour
         isMoviendo = false;
         yield return new WaitForSeconds(2f);
         target = (target == start) ? end : start;
+        MirandoTarget();
         isMoviendo = true;
     }
     IEnumerator MisionFallidaCorroutine()
@@ -448,22 +517,27 @@ public class PigMovement : MonoBehaviour
     }
     IEnumerator CerdoSeIncorporaCorroutine()
     {
-        
+        isLanding = false;
         yield return new WaitForSeconds(2f);
         rb.AddForce(Vector2.up * salto * Time.fixedDeltaTime, ForceMode2D.Impulse);
         rb.rotation = 0;
-        estadoActual = EstadoEnemigo.Cae;        
+        estadoActual = EstadoEnemigo.Salta;
         print("No podras conmigo");
+    }
+    IEnumerator CerdoRebotaRoutine()
+    {
+        yield return new WaitForSeconds(0.7f);
+        estadoActual = estadoUltimo;
     }
 
     private void MirandoTarget()
     {
-        if (target.x > transform.position.x + 0.2f)
+        if (target.x > transform.position.x )
         {
             direccion = Vector2.right;
             spriteCerdo.flipX = true;
         }
-        else if (target.x < transform.position.x - 0.2)
+        else if (target.x < transform.position.x )
         {
             direccion = Vector2.left;
             spriteCerdo.flipX = false;
